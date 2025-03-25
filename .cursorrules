@@ -1,0 +1,70 @@
+{
+  "rules": [
+    {
+      "name": "Consistent naming conventions",
+      "pattern": "^[A-Z][a-zA-Z]*$",
+      "targets": ["*.cs"],
+      "message": "Use PascalCase for class names and public members in C#"
+    },
+    {
+      "name": "React component naming",
+      "pattern": "^[A-Z][a-zA-Z]*\\.tsx$",
+      "targets": ["src/components/**/*.tsx", "src/pages/**/*.tsx"],
+      "message": "React components should use PascalCase and have a .tsx extension"
+    },
+    {
+      "name": "No 'any' type in TypeScript",
+      "pattern": ":\\s*any",
+      "targets": ["**/*.ts", "**/*.tsx"],
+      "message": "Avoid using 'any' type. Use specific types or 'unknown' if necessary"
+    },
+    {
+      "name": "Max line length",
+      "pattern": ".{101,}",
+      "targets": ["**/*.cs", "**/*.ts", "**/*.tsx"],
+      "message": "Keep lines under 100 characters for better readability"
+    },
+    {
+      "name": "No console.log in production",
+      "pattern": "console\\.log$$",
+      "targets": ["src/**/*.ts", "src/**/*.tsx"],
+      "message": "Remove console.log statements before committing"
+    },
+    {
+      "name": "Use async/await",
+      "pattern": "\\.then$$",
+      "targets": ["**/*.ts", "**/*.tsx"],
+      "message": "Prefer async/await over .then() for better readability"
+    },
+    {
+      "name": "Use interface for DTOs",
+      "pattern": "class\\s+\\w+Dto",
+      "targets": ["**/*.cs"],
+      "message": "Use interfaces instead of classes for DTOs in C#"
+    },
+    {
+      "name": "Proper error handling",
+      "pattern": "throw\\s+new\\s+Exception$$",
+      "targets": ["**/*.cs"],
+      "message": "Use custom exception classes or more specific exception types"
+    },
+    {
+      "name": "Use dependency injection",
+      "pattern": "new\\s+[A-Z]\\w+$$",
+      "targets": ["**/*.cs"],
+      "message": "Avoid direct instantiation. Use dependency injection instead"
+    },
+    {
+      "name": "Use functional components",
+      "pattern": "class\\s+\\w+\\s+extends\\s+React\\.Component",
+      "targets": ["**/*.tsx"],
+      "message": "Prefer functional components with hooks over class components"
+    },
+    {
+        "name": "README presence",
+        "pattern": "^$",
+        "targets": ["README.md"],
+        "message": "Ensure README.md file is present and up-to-date"
+      }
+  ]
+}
