@@ -1,5 +1,3 @@
-## Project Structure and Steps
-
 ## Key Features
 
 ### Product Categories
@@ -88,8 +86,6 @@
 
 ### Virtual Trading Card Game
 - Implement a digital trading card game where users can collect cards through purchases or as bonuses
-
-
 
 ### 1. Project Setup
 - Create the main project directory
