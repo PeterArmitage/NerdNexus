@@ -13,14 +13,20 @@ namespace Backend.Services
     public class AuthService : IAuthService
     {
         private readonly ApplicationDbContext _context;
-        private readonly IConfiguration _configuration;
+       
+        private readonly string _jwtSecret;
+      
 
-        public AuthService(ApplicationDbContext context, IConfiguration configuration)
+       
+        public AuthService(ApplicationDbContext context) // Consider injecting IConfiguration for better practice
         {
             _context = context;
-            _configuration = configuration;
+            // It's generally better to inject IConfiguration and read from there,
+            // but reading directly from Environment works if Env.Load() is called early.
+            _jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET_KEY")
+                ?? throw new InvalidOperationException("JWT Secret Key not configured.");
+            
         }
-
         public async Task<User> Register(RegisterDto registerDto)
         {
             // Check if username already exists
@@ -51,12 +57,12 @@ namespace Backend.Services
             return user;
         }
 
-        public async Task<string?> Login(LoginDto loginDto)
+        public async Task<string> Login(LoginDto loginDto)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == loginDto.Username);
             if (user == null || !VerifyPasswordHash(loginDto.Password, user.PasswordHash, user.PasswordSalt))
             {
-                return null;
+                throw new UnauthorizedAccessException("Invalid credentials");
             }
 
             return CreateToken(user);
@@ -80,26 +86,28 @@ namespace Backend.Services
         {
             var claims = new List<Claim>
             {
-                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new(ClaimTypes.Name, user.Username)
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Email, user.Email)
+                // Add roles here if you implement them: new Claim(ClaimTypes.Role, "Admin"),
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _configuration.GetSection("AppSettings:Token").Value ?? throw new InvalidOperationException("Token not configured")));
-
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSecret));
+            // Ensure you use HmacSha512 here to match the key size requirement
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(1),
-                SigningCredentials = creds
+                Expires = DateTime.UtcNow.AddDays(1), // Token expiration
+                SigningCredentials = creds,
+               
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return tokenHandler.WriteToken(token);
+            return tokenHandler.WriteToken(token); 
         }
     }
 }

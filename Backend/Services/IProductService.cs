@@ -5,10 +5,11 @@ namespace Backend.Services
 {
     public interface IProductService
     {
-        Task<IEnumerable<Product>> GetAllProductsAsync();
-        Task<Product?> GetProductByIdAsync(int id);
-        Task<Product> CreateProductAsync(ProductDto productDto);
-        Task<Product?> UpdateProductAsync(int id, ProductDto productDto);
+        Task<IEnumerable<ProductDto>> GetAllProductsAsync();
+        Task<ProductDto> CreateProductAsync(CreateProductDto productDto);
+        Task<ProductDto?> GetProductByIdAsync(int id);
+        Task<IEnumerable<ProductDto>> GetProductsAsync(ProductFilterDto filterDto);
+        Task<ProductDto?> UpdateProductAsync(int id, UpdateProductDto productDto);
         Task<bool> DeleteProductAsync(int id);
     }
 }

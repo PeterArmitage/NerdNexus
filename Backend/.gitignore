@@ -1,1 +1,56 @@
+# Environment variables
 .env
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Bb]in/
+[Oo]bj/
+build/
+Build/
+BUILD/
+
+# IDE files
+.vs/
+.vscode/ # Keep if you want to share specific settings, otherwise ignore
+
+# Rider files
+.idea/
+
+# Nuget packages
+*.nupkg
+# The packages folder can be ignored if it is committed
+# packages/
+# except build/, which is used as an MSBuild target.
+!**/packages/build/
+
+# Cache files
+*.nuget.props
+*.nuget.targets
+
+# Test results
+testresults/
+TestResults/
+*.trx
+
+# Dependency directories
+node_modules/ # If you use Node.js tools in your backend build process
+jspm_packages/
+
+# Mac files
+.DS_Store
+
+# Various log files
+*.log
+logs/
+
+# Other temporary files
+*.swp # Vim swap file
+
+# Secrets/config files often stored locally
+appsettings.Development.json # Often contains development secrets/overrides
+secrets.json

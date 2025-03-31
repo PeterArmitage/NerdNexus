@@ -110,5 +110,30 @@ namespace Backend.Services
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<Review?> UpdateReviewAsync(int reviewId, int userId, ReviewDto reviewDto)
+        {
+            var review = await _context.Reviews
+                .FirstOrDefaultAsync(r => r.Id == reviewId && r.UserId == userId);
+            
+            if (review == null) return null;
+            
+            review.Title = reviewDto.Title;
+            review.Content = reviewDto.Content;
+            review.Rating = reviewDto.Rating;
+            review.UpdatedAt = DateTime.UtcNow;
+            
+            await _context.SaveChangesAsync();
+            return review;
+        }
+
+        public async Task<IEnumerable<Review>> GetUserReviewsAsync(int userId)
+        {
+            return await _context.Reviews
+                .Where(r => r.UserId == userId)
+                .Include(r => r.Product)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
+        }
     }
 }

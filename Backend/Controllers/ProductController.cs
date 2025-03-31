@@ -31,9 +31,9 @@ namespace Backend.Controllers
             return Ok(product);
         }
 
-        [Authorize] // Only authenticated users can create products
+        [Authorize] 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(ProductDto productDto)
+        public async Task<IActionResult> CreateProduct(CreateProductDto productDto)
         {
             var product = await _productService.CreateProductAsync(productDto);
             return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
@@ -41,7 +41,7 @@ namespace Backend.Controllers
 
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, ProductDto productDto)
+        public async Task<IActionResult> UpdateProduct(int id, UpdateProductDto productDto)
         {
             var product = await _productService.UpdateProductAsync(id, productDto);
             if (product == null) return NotFound();
