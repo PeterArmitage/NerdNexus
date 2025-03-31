@@ -16,12 +16,12 @@ namespace Backend.Services
 
         public async Task<OrderResponseDto> CreateOrderAsync(int userId, OrderDto orderDto)
         {
-            // Start transaction
+            
             using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
             {
-                // Create new order
+               
                 var order = new Order
                 {
                     UserId = userId,
@@ -29,7 +29,7 @@ namespace Backend.Services
                     Status = "Pending"
                 };
 
-                // Calculate order items and total
+             
                 decimal totalAmount = 0;
                 var orderItems = new List<OrderItem>();
 
@@ -63,7 +63,7 @@ namespace Backend.Services
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
-                return await CreateOrderResponseDto(order);
+                return CreateOrderResponseDto(order);
             }
             catch
             {
@@ -79,7 +79,7 @@ namespace Backend.Services
                 .ThenInclude(oi => oi.Product)
                 .FirstOrDefaultAsync(o => o.Id == orderId && o.UserId == userId);
 
-            return order == null ? null : await CreateOrderResponseDto(order);
+            return order == null ? null : CreateOrderResponseDto(order);
         }
 
         public async Task<IEnumerable<OrderResponseDto>> GetUserOrdersAsync(int userId)
@@ -91,7 +91,7 @@ namespace Backend.Services
                 .OrderByDescending(o => o.OrderDate)
                 .ToListAsync();
 
-            return await Task.WhenAll(orders.Select(CreateOrderResponseDto));
+            return orders.Select(order => CreateOrderResponseDto(order));
         }
 
         public async Task<OrderResponseDto?> UpdateOrderStatusAsync(int orderId, string status)
@@ -107,7 +107,7 @@ namespace Backend.Services
             order.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
-            return await CreateOrderResponseDto(order);
+            return CreateOrderResponseDto(order);
         }
 
         public async Task<bool> CancelOrderAsync(int orderId, int userId)
@@ -147,7 +147,7 @@ namespace Backend.Services
             }
         }
 
-        private async Task<OrderResponseDto> CreateOrderResponseDto(Order order)
+        private OrderResponseDto CreateOrderResponseDto(Order order)
         {
             return new OrderResponseDto
             {

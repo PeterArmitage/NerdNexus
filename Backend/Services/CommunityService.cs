@@ -54,8 +54,8 @@ namespace Backend.Services
         public async Task<IEnumerable<ForumPost>> GetForumPostsAsync(string? category = null)
         {
             var query = _context.ForumPosts
-                .Where(p => p.IsActive)
-                .Include(p => p.User);
+                .Include(p => p.User)
+                .Where(p => p.IsActive);
 
             if (!string.IsNullOrEmpty(category))
             {

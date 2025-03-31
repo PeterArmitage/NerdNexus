@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Yj8noNjVSjk=",
+  "dgSpecHash": "gmzMGUeQC1A=",
   "success": true,
-  "projectFilePath": "C:\\Users\\ficoc\\OneDrive\\Desktop\\Projects\\NerdNexus\\Backend\\Backend.csproj",
+  "projectFilePath": "C:\\Users\\ficoc\\OneDrive\\Desktop\\Projects\\NerdNexus\\backend\\Backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ficoc\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\ficoc\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\9.0.3\\microsoft.aspnetcore.authentication.jwtbearer.9.0.3.nupkg.sha512",
