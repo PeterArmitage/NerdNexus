@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Backend.Data;
+using Backend.Data.Repositories;
 using Backend.Models;
 using Backend.DTOs;
 using Microsoft.EntityFrameworkCore;
@@ -12,33 +13,28 @@ namespace Backend.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly ApplicationDbContext _context;
-       
+        private readonly IUserRepository _userRepository;
         private readonly string _jwtSecret;
-      
 
-       
-        public AuthService(ApplicationDbContext context) // Consider injecting IConfiguration for better practice
+        public AuthService(IUserRepository userRepository)
         {
-            _context = context;
-            // It's generally better to inject IConfiguration and read from there,
-            // but reading directly from Environment works if Env.Load() is called early.
+            _userRepository = userRepository;
             _jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET_KEY")
                 ?? throw new InvalidOperationException("JWT Secret Key not configured.");
-            
         }
+
         public async Task<User> Register(RegisterDto registerDto)
         {
             // Check if username already exists
-            if (await _context.Users.AnyAsync(u => u.Username == registerDto.Username))
+            if (await _userRepository.UsernameExistsAsync(registerDto.Username))
             {
-                throw new Exception("Username already exists");
+                throw new InvalidOperationException("Username already exists");
             }
 
             // Check if email already exists
-            if (await _context.Users.AnyAsync(u => u.Email == registerDto.Email))
+            if (await _userRepository.EmailExistsAsync(registerDto.Email))
             {
-                throw new Exception("Email already exists");
+                throw new InvalidOperationException("Email already exists");
             }
 
             CreatePasswordHash(registerDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -51,21 +47,61 @@ namespace Backend.Services
                 PasswordSalt = passwordSalt
             };
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
+            await _userRepository.CreateAsync(user);
             return user;
         }
 
         public async Task<string> Login(LoginDto loginDto)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == loginDto.Username);
+            var user = await _userRepository.GetByUsernameAsync(loginDto.Username);
             if (user == null || !VerifyPasswordHash(loginDto.Password, user.PasswordHash, user.PasswordSalt))
             {
                 throw new UnauthorizedAccessException("Invalid credentials");
             }
 
             return CreateToken(user);
+        }
+
+        public async Task<UserProfileDto> GetUserProfile(int userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"User with ID {userId} not found");
+            }
+
+            return new UserProfileDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email,
+                CreatedAt = user.CreatedAt,
+                Roles = new List<string>() // Add roles implementation if needed
+            };
+        }
+
+        public async Task<UserProfileDto> UpdateUserProfile(UserProfileDto profileDto)
+        {
+            var user = await _userRepository.GetByIdAsync(profileDto.Id);
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"User with ID {profileDto.Id} not found");
+            }
+
+            // Update user properties
+            user.Email = profileDto.Email;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            await _userRepository.UpdateAsync(user);
+
+            return new UserProfileDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email,
+                CreatedAt = user.CreatedAt,
+                Roles = profileDto.Roles
+            };
         }
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -88,26 +124,40 @@ namespace Backend.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Email, user.Email)
-                // Add roles here if you implement them: new Claim(ClaimTypes.Role, "Admin"),
+                new Claim(ClaimTypes.Email, user.Email),
+                // Standard JWT claims
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.Username)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSecret));
-            // Ensure you use HmacSha512 here to match the key size requirement
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            // Use HmacSha256 instead of HmacSha512 for wider compatibility
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
 
+            // Set explicit timestamps for token validity
+            var now = DateTime.UtcNow;
+            
+            // Print the secret key length for debugging (without showing the actual key)
+            Console.WriteLine($"JWT Secret length: {_jwtSecret.Length} characters");
+            
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(1), // Token expiration
-                SigningCredentials = creds,
-               
+                IssuedAt = now,
+                NotBefore = now,
+                Expires = now.AddDays(1),
+                SigningCredentials = creds
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            return tokenHandler.WriteToken(token); 
+            var serializedToken = tokenHandler.WriteToken(token);
+            
+            // Print token length for debugging
+            Console.WriteLine($"Generated token length: {serializedToken.Length} characters");
+            
+            return serializedToken;
         }
     }
 }

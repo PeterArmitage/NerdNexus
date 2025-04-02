@@ -1,9 +1,11 @@
-import Navigation from '@/components/Navigation/page';
-import Hero from '@/components/Hero/page';
-import Features from '@/components/Features/page';
-import FeaturedProducts from '@/components/FeaturedProducts/page';
-import Community from '@/components/Community/page';
-import Footer from '@/components/Footer/page';
+'use client';
+
+import Navigation from '@/app/components/Navigation/page';
+import Hero from '@/app/components/Hero/page';
+import Features from '@/app/components/Features/page';
+import FeaturedProducts from '@/app/components/FeaturedProducts/page';
+import Community from '@/app/components/Community/page';
+import Footer from '@/app/components/Footer/page';
 
 export default function Home() {
 	return (

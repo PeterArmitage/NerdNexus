@@ -4,8 +4,8 @@ using Backend.Services;
 using Backend.DTOs;
 using System.Security.Claims;
 
-namespace Backend.Controllers
-{
+namespace Backend.Controllers;
+
     [ApiController]
     [Route("api/[controller]")]
     public class CommunityController : ControllerBase
@@ -85,4 +85,4 @@ namespace Backend.Controllers
             return NoContent();
         }
     }
-}
+

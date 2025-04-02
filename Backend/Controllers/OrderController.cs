@@ -4,8 +4,8 @@ using Backend.Services;
 using Backend.DTOs;
 using System.Security.Claims;
 
-namespace Backend.Controllers
-{
+namespace Backend.Controllers;
+
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
@@ -74,4 +74,4 @@ namespace Backend.Controllers
             return Ok(order);
         }
     }
-}
+

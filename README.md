@@ -1,3 +1,89 @@
+# NerdNexus
+
+An e-commerce platform for gaming, anime, and collectibles.
+
+## Current Status
+
+The application has the following features implemented:
+
+- User authentication (registration, login, logout)
+- User profile management
+- Products listing and details
+- Basic error handling for API connectivity issues
+- Responsive navigation with role-based UI elements
+- Route organization using Next.js route groups
+
+## Next Steps
+
+Here are the planned next steps for the project:
+
+1. **Shopping Cart Implementation**
+   - Create cart state management
+   - Add/remove products functionality
+   - Cart persistence across sessions
+
+2. **Order Processing**
+   - Checkout flow
+   - Order history
+   - Order details
+
+3. **Product Search and Filtering**
+   - Implement search functionality
+   - Add category-based filtering
+   - Price range filtering
+
+4. **User Reviews and Ratings**
+   - Allow users to leave product reviews
+   - Implement rating system
+   - Show average ratings on product cards
+
+5. **Admin Dashboard**
+   - Product management (CRUD)
+   - User management
+   - Order management
+   - Analytics
+
+## Setup Instructions
+
+### Prerequisites
+- Node.js 18+ for Frontend
+- .NET 9.0 for Backend
+- PostgreSQL
+
+### Frontend Setup
+1. Navigate to the Frontend directory
+2. Create a `.env.local` file with:
+   ```
+   NEXT_PUBLIC_API_URL=http://localhost:5138
+   ```
+3. Install dependencies: `npm install`
+4. Run the development server: `npm run dev`
+
+### Backend Setup
+1. Navigate to the Backend directory
+2. Create a `.env` file with:
+   ```
+   DATABASE_URL=Host=localhost;Database=NerdNexus;Username=postgres;Password=yourpassword
+   JWT_SECRET_KEY=your-secret-key-here
+   ```
+3. Run `dotnet restore`
+4. Run `dotnet run`
+
+## Technologies Used
+
+### Frontend
+- Next.js 14 with App Router
+- TypeScript
+- TailwindCSS
+- Lucide React for icons
+
+### Backend
+- ASP.NET Core 9.0
+- Entity Framework Core
+- PostgreSQL
+- JWT Authentication
+- FluentValidation
+
 ## Key Features
 
 ### Product Categories

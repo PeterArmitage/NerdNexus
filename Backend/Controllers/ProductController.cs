@@ -3,8 +3,8 @@ using Backend.Services;
 using Backend.DTOs;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Backend.Controllers
-{
+namespace Backend.Controllers;
+
     [ApiController]
     [Route("api/[controller]")]
     public class ProductController : ControllerBase
@@ -57,4 +57,3 @@ namespace Backend.Controllers
             return NoContent();
         }
     }
-}

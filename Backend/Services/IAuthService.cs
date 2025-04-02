@@ -8,5 +8,7 @@ namespace Backend.Services
     {
         Task<User> Register(RegisterDto registerDto);
         Task<string> Login(LoginDto loginDto);
+        Task<UserProfileDto> GetUserProfile(int userId);
+        Task<UserProfileDto> UpdateUserProfile(UserProfileDto profileDto);
     }
 }
