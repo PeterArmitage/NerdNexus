@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
 	Gamepad2,
@@ -15,14 +15,40 @@ import { useAuth } from '@/context/AuthContext';
 export default function Navigation() {
 	const { isAuthenticated, user, logout } = useAuth();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+	const userMenuRef = useRef<HTMLDivElement>(null);
+	const userButtonRef = useRef<HTMLButtonElement>(null);
 
 	// Log auth state for debugging
 	useEffect(() => {
 		console.log('Auth state in Navigation:', { isAuthenticated, user });
 	}, [isAuthenticated, user]);
 
+	// Effect to handle click outside of user menu to close it
+	useEffect(() => {
+		function handleClickOutside(event: MouseEvent) {
+			if (
+				userMenuRef.current &&
+				userButtonRef.current &&
+				!userMenuRef.current.contains(event.target as Node) &&
+				!userButtonRef.current.contains(event.target as Node)
+			) {
+				setIsUserMenuOpen(false);
+			}
+		}
+
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, []);
+
 	const toggleMenu = () => {
 		setIsMenuOpen(!isMenuOpen);
+	};
+
+	const toggleUserMenu = () => {
+		setIsUserMenuOpen(!isUserMenuOpen);
 	};
 
 	return (
@@ -72,34 +98,46 @@ export default function Navigation() {
 						</Link>
 
 						{isAuthenticated ? (
-							<div className='relative group'>
-								<button className='flex items-center space-x-1 hover:text-purple-500 transition-colors'>
+							<div className='relative'>
+								<button
+									ref={userButtonRef}
+									onClick={toggleUserMenu}
+									className='flex items-center space-x-1 hover:text-purple-500 transition-colors'
+								>
 									<User className='h-5 w-5' />
 									<span className='hidden md:inline'>{user?.username}</span>
 								</button>
-								<div className='absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 hidden group-hover:block'>
-									<Link
-										href='/profile'
-										className='block px-4 py-2 text-sm hover:bg-gray-700 hover:text-purple-500'
+								{isUserMenuOpen && (
+									<div
+										ref={userMenuRef}
+										className='absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50'
 									>
-										Profile
-									</Link>
-									<Link
-										href='/orders'
-										className='block px-4 py-2 text-sm hover:bg-gray-700 hover:text-purple-500'
-									>
-										Orders
-									</Link>
-									<button
-										onClick={logout}
-										className='block w-full text-left px-4 py-2 text-sm hover:bg-gray-700 hover:text-purple-500'
-									>
-										<div className='flex items-center'>
-											<LogOut className='h-4 w-4 mr-2' />
-											Logout
-										</div>
-									</button>
-								</div>
+										<Link
+											href='/profile'
+											className='block px-4 py-2 text-sm hover:bg-gray-700 hover:text-purple-500'
+										>
+											Profile
+										</Link>
+										<Link
+											href='/orders'
+											className='block px-4 py-2 text-sm hover:bg-gray-700 hover:text-purple-500'
+										>
+											Orders
+										</Link>
+										<button
+											onClick={() => {
+												logout();
+												setIsUserMenuOpen(false);
+											}}
+											className='block w-full text-left px-4 py-2 text-sm hover:bg-gray-700 hover:text-purple-500'
+										>
+											<div className='flex items-center'>
+												<LogOut className='h-4 w-4 mr-2' />
+												Logout
+											</div>
+										</button>
+									</div>
+								)}
 							</div>
 						) : (
 							<div className='flex items-center space-x-3'>
