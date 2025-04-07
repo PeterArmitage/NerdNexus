@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
+import SearchBar from '@/app/components/SearchBar/page';
 
 export default function Navigation() {
 	const { isAuthenticated, user, logout } = useAuth();
@@ -53,48 +54,48 @@ export default function Navigation() {
 	};
 
 	return (
-		<nav className='bg-gray-800 fixed w-full z-50'>
+		<nav className='bg-gray-900 fixed w-full z-50'>
 			<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
 				<div className='flex items-center justify-between h-16'>
 					<div className='flex items-center'>
-						<Link href='/' className='flex items-center'>
-							<Gamepad2 className='h-8 w-8 text-purple-500' />
-							<span className='ml-2 text-xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent'>
-								NerdNexus
-							</span>
+						<Gamepad2 className='h-8 w-8 text-purple-500' />
+						<Link
+							href='/'
+							className='ml-2 text-xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent'
+						>
+							NerdNexus
 						</Link>
 					</div>
+
+					{/* Desktop Navigation */}
 					<div className='hidden md:block'>
 						<div className='flex items-center space-x-4'>
 							<Link
 								href='/games'
-								className='hover:text-purple-500 transition-colors'
+								className='text-gray-300 hover:text-purple-500 transition-colors'
 							>
 								Games
 							</Link>
 							<Link
 								href='/anime'
-								className='hover:text-purple-500 transition-colors'
+								className='text-gray-300 hover:text-purple-500 transition-colors'
 							>
 								Anime
 							</Link>
 							<Link
 								href='/collectibles'
-								className='hover:text-purple-500 transition-colors'
+								className='text-gray-300 hover:text-purple-500 transition-colors'
 							>
 								Collectibles
 							</Link>
-							<Link
-								href='/community'
-								className='hover:text-purple-500 transition-colors'
-							>
-								Community
-							</Link>
+							<div className='w-48 ml-2'>
+								<SearchBar />
+							</div>
 							<Link
 								href='/cart'
-								className='hover:text-purple-500 transition-colors relative'
+								className='text-gray-300 hover:text-purple-500 transition-colors relative'
 							>
-								<ShoppingCart className='h-5 w-5' />
+								<ShoppingCart className='h-6 w-6' />
 								{totalItems > 0 && (
 									<span className='absolute -top-2 -right-2 bg-purple-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center'>
 										{totalItems}

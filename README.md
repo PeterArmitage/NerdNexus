@@ -14,6 +14,7 @@ The application has the following features implemented:
 - Route organization using Next.js route groups
 - Shopping cart implementation with add/remove functionality and persistent storage
 - Order processing with checkout flow and order history
+- Search and filtering functionality
 
 ## Next Steps
 
@@ -115,45 +116,25 @@ Here are the planned next steps for the project:
 
 ## Technical Implementation
 
-### Frontend (React)
+### Frontend
+- **Component Structure**: Using a hierarchical component structure with both page-level and reusable components
+- **State Management**: Context API for global state like authentication and shopping cart
+- **Styling**: Tailwind CSS for responsive design
+- **Routing**: Next.js App Router for seamless navigation
+- **Search & Filtering**: 
+  - Implemented a reusable SearchBar component
+  - Advanced filtering by category, price range, and other attributes
+  - Sorting options (price, rating, alphabetical)
+  - Dedicated search results page
+  - Visual filter indicators and counts
+  - Responsive design across all device sizes
 
-#### Component Structure
-- Create reusable components for product cards, review systems, and user profiles
-- Implement a responsive design for mobile and desktop users
-
-#### State Management
-- Use Redux or Context API for global state management
-- Implement real-time updates for inventory and user interactions
-
-#### UI/UX Design
-- Design a sleek, modern interface with nerd culture-inspired themes
-- Add interactive elements like hover effects on product images
-
-#### Performance Optimization
-- Implement lazy loading for images and components
-- Use code splitting to improve initial load times
-
-### Backend (C# .NET)
-
-#### API Development
-- Create RESTful APIs for product management, user authentication, and order processing
-- Implement GraphQL for more efficient data fetching
-
-#### Database Design
-- Use Entity Framework Core for ORM
-- Design schemas for products, users, orders, and community features
-
-#### Security
-- Implement JWT authentication for secure user sessions
-- Use HTTPS and implement proper input validation and sanitization
-
-#### Integration
-- Connect with payment gateways (e.g., Stripe, PayPal)
-- Integrate with external APIs for real-time pricing of collectibles or game keys
-
-#### Scalability
-- Implement caching mechanisms (e.g., Redis) for frequently accessed data
-- Design the backend to be easily scalable using microservices architecture
+### Backend
+- **API Development**: Create RESTful APIs for product management, user authentication, and order processing
+- **Database Design**: Use Entity Framework Core for ORM
+- **Security**: Implement JWT authentication for secure user sessions
+- **Integration**: Connect with payment gateways (e.g., Stripe, PayPal)
+- **Scalability**: Implement caching mechanisms (e.g., Redis) for frequently accessed data
 
 ## Unique Features to Consider
 
