@@ -9,22 +9,23 @@ import {
 	Menu,
 	User,
 	LogOut,
+	X,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useCart } from '@/context/CartContext';
 
 export default function Navigation() {
 	const { isAuthenticated, user, logout } = useAuth();
+	const { totalItems } = useCart();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 	const userMenuRef = useRef<HTMLDivElement>(null);
 	const userButtonRef = useRef<HTMLButtonElement>(null);
 
-	// Log auth state for debugging
 	useEffect(() => {
 		console.log('Auth state in Navigation:', { isAuthenticated, user });
 	}, [isAuthenticated, user]);
 
-	// Effect to handle click outside of user menu to close it
 	useEffect(() => {
 		function handleClickOutside(event: MouseEvent) {
 			if (
@@ -66,7 +67,7 @@ export default function Navigation() {
 					<div className='hidden md:block'>
 						<div className='flex items-center space-x-4'>
 							<Link
-								href='/products'
+								href='/games'
 								className='hover:text-purple-500 transition-colors'
 							>
 								Games
@@ -89,76 +90,82 @@ export default function Navigation() {
 							>
 								Community
 							</Link>
+							<Link
+								href='/cart'
+								className='hover:text-purple-500 transition-colors relative'
+							>
+								<ShoppingCart className='h-5 w-5' />
+								{totalItems > 0 && (
+									<span className='absolute -top-2 -right-2 bg-purple-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center'>
+										{totalItems}
+									</span>
+								)}
+							</Link>
+							{isAuthenticated ? (
+								<div className='relative'>
+									<button
+										ref={userButtonRef}
+										onClick={toggleUserMenu}
+										className='flex items-center space-x-1 hover:text-purple-500 transition-colors'
+									>
+										<User className='h-5 w-5' />
+										<span className='hidden md:inline'>{user?.username}</span>
+									</button>
+									{isUserMenuOpen && (
+										<div
+											ref={userMenuRef}
+											className='absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50'
+										>
+											<Link
+												href='/profile'
+												className='block px-4 py-2 text-sm hover:bg-gray-700 hover:text-purple-500'
+											>
+												Profile
+											</Link>
+											<Link
+												href='/orders'
+												className='block px-4 py-2 text-sm hover:bg-gray-700 hover:text-purple-500'
+											>
+												Orders
+											</Link>
+											<button
+												onClick={() => {
+													logout();
+													setIsUserMenuOpen(false);
+												}}
+												className='block w-full text-left px-4 py-2 text-sm hover:bg-gray-700 hover:text-purple-500'
+											>
+												<div className='flex items-center'>
+													<LogOut className='h-4 w-4 mr-2' />
+													Logout
+												</div>
+											</button>
+										</div>
+									)}
+								</div>
+							) : (
+								<div className='flex items-center space-x-3'>
+									<Link
+										href='/login'
+										className='text-sm font-medium hover:text-purple-500 transition-colors'
+									>
+										Login
+									</Link>
+									<Link
+										href='/register'
+										className='text-sm font-medium bg-purple-600 py-1 px-3 rounded-md hover:bg-purple-700 transition-colors'
+									>
+										Register
+									</Link>
+								</div>
+							)}
 						</div>
 					</div>
-					<div className='flex items-center space-x-4'>
+					<div className='flex items-center space-x-4 md:hidden'>
 						<Search className='h-5 w-5 text-gray-400 hover:text-purple-500 cursor-pointer' />
-						<Link href='/cart'>
-							<ShoppingCart className='h-5 w-5 text-gray-400 hover:text-purple-500 cursor-pointer' />
-						</Link>
-
-						{isAuthenticated ? (
-							<div className='relative'>
-								<button
-									ref={userButtonRef}
-									onClick={toggleUserMenu}
-									className='flex items-center space-x-1 hover:text-purple-500 transition-colors'
-								>
-									<User className='h-5 w-5' />
-									<span className='hidden md:inline'>{user?.username}</span>
-								</button>
-								{isUserMenuOpen && (
-									<div
-										ref={userMenuRef}
-										className='absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50'
-									>
-										<Link
-											href='/profile'
-											className='block px-4 py-2 text-sm hover:bg-gray-700 hover:text-purple-500'
-										>
-											Profile
-										</Link>
-										<Link
-											href='/orders'
-											className='block px-4 py-2 text-sm hover:bg-gray-700 hover:text-purple-500'
-										>
-											Orders
-										</Link>
-										<button
-											onClick={() => {
-												logout();
-												setIsUserMenuOpen(false);
-											}}
-											className='block w-full text-left px-4 py-2 text-sm hover:bg-gray-700 hover:text-purple-500'
-										>
-											<div className='flex items-center'>
-												<LogOut className='h-4 w-4 mr-2' />
-												Logout
-											</div>
-										</button>
-									</div>
-								)}
-							</div>
-						) : (
-							<div className='flex items-center space-x-3'>
-								<Link
-									href='/login'
-									className='text-sm font-medium hover:text-purple-500 transition-colors'
-								>
-									Login
-								</Link>
-								<Link
-									href='/register'
-									className='text-sm font-medium bg-purple-600 py-1 px-3 rounded-md hover:bg-purple-700 transition-colors'
-								>
-									Register
-								</Link>
-							</div>
-						)}
-
 						<Menu
 							onClick={toggleMenu}
-							className='h-5 w-5 md:hidden text-gray-400 cursor-pointer'
+							className='h-5 w-5 text-gray-400 cursor-pointer'
 						/>
 					</div>
 				</div>
@@ -168,7 +175,7 @@ export default function Navigation() {
 					<div className='md:hidden bg-gray-800 pb-3 pt-2'>
 						<div className='px-2 space-y-1'>
 							<Link
-								href='/products'
+								href='/games'
 								className='block px-3 py-2 rounded-md hover:bg-gray-700 hover:text-purple-500'
 							>
 								Games

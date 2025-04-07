@@ -24,7 +24,6 @@ export default function Login() {
 			[name]: value,
 		}));
 
-		// Clear error when user types
 		if (error) {
 			setError('');
 		}
@@ -41,7 +40,6 @@ export default function Login() {
 				password: '********',
 			});
 
-			// Use the API service for login
 			const data = await authApi.login(formData.username, formData.password);
 			console.log('Login API response received');
 
@@ -51,12 +49,12 @@ export default function Login() {
 			}
 
 			console.log('Token received, attempting to authenticate');
-			// Use the AuthContext login function
+
 			const loginSuccess = await login(data.token);
 
 			if (loginSuccess) {
 				console.log('Login successful, redirecting to home page');
-				// Redirect to home page on success
+
 				router.push('/');
 			} else {
 				console.error('Login failed: Authentication with token failed');
@@ -65,7 +63,6 @@ export default function Login() {
 		} catch (err: any) {
 			console.error('Login error:', err);
 
-			// Provide user-friendly error messages
 			if (err.message.includes('Unauthorized')) {
 				setError('Invalid username or password');
 			} else if (

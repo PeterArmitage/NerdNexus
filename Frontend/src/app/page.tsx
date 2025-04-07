@@ -10,7 +10,6 @@ import Footer from '@/app/components/Footer/page';
 export default function Home() {
 	return (
 		<div className='bg-gray-900 text-white'>
-			<Navigation />
 			<Hero />
 			<Features />
 			<FeaturedProducts />

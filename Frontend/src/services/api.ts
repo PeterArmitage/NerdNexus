@@ -1,29 +1,21 @@
-// Ensure we have a valid API URL
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5138';
-
-// Log for debugging
-console.log('API URL:', API_URL);
 
 // Helper to handle API responses
 const handleResponse = async (response: Response) => {
 	try {
-		// For successful responses with no content
 		if (response.status === 204) {
 			return null;
 		}
 
-		// Handle 401 Unauthorized specifically
 		if (response.status === 401) {
 			const error = 'Unauthorized - Please log in again';
 			console.error('Authentication error:', error);
 			throw new Error(error);
 		}
 
-		// Check if the response has a content-type header and if it's JSON
 		const contentType = response.headers.get('content-type');
 		const isJson = contentType && contentType.includes('application/json');
 
-		// Get the response data if it's JSON and not empty
 		let data = null;
 		if (isJson && response.headers.get('content-length') !== '0') {
 			try {
@@ -35,7 +27,6 @@ const handleResponse = async (response: Response) => {
 		}
 
 		if (!response.ok) {
-			// Extract error message from response
 			const error =
 				(data && data.message) ||
 				response.statusText ||
@@ -46,11 +37,10 @@ const handleResponse = async (response: Response) => {
 
 		return data;
 	} catch (error) {
-		// Re-throw if it's already an Error
 		if (error instanceof Error) {
 			throw error;
 		}
-		// Otherwise, wrap in Error
+
 		throw new Error(String(error));
 	}
 };
@@ -103,13 +93,11 @@ export const authApi = {
 		try {
 			console.log('Fetching profile from:', `${API_URL}/api/Auth/profile`);
 
-			// Check if token exists
 			if (!token) {
 				console.error('No token provided for profile request');
 				throw new Error('Authentication token is missing');
 			}
 
-			// Show token structure for debugging
 			const tokenParts = token.split('.');
 			if (tokenParts.length !== 3) {
 				console.error(
@@ -185,7 +173,7 @@ export const productsApi = {
 			return handleResponse(response);
 		} catch (error) {
 			console.error('Failed to fetch products:', error);
-			return []; // Return empty array on connection error
+			return [];
 		}
 	},
 
@@ -195,7 +183,7 @@ export const productsApi = {
 			return handleResponse(response);
 		} catch (error) {
 			console.error(`Failed to fetch product ${id}:`, error);
-			return null; // Return null on connection error
+			return null;
 		}
 	},
 
@@ -207,7 +195,7 @@ export const productsApi = {
 			return handleResponse(response);
 		} catch (error) {
 			console.error(`Failed to fetch products in category ${category}:`, error);
-			return []; // Return empty array on connection error
+			return [];
 		}
 	},
 };
@@ -304,7 +292,6 @@ export const communityApi = {
 	},
 };
 
-// Add a test method to check backend connectivity
 export const testApi = {
 	public: async () => {
 		try {

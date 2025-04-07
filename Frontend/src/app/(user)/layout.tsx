@@ -1,4 +1,3 @@
-import Navigation from '@/app/components/Navigation/page';
 import Footer from '@/app/components/Footer/page';
 
 export default function UserLayout({
@@ -8,7 +7,6 @@ export default function UserLayout({
 }) {
 	return (
 		<div className='bg-gray-900 min-h-screen'>
-			<Navigation />
 			<main>{children}</main>
 			<Footer />
 		</div>

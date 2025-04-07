@@ -4,7 +4,6 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { authApi } from '@/services/api';
 
-// Define user type
 interface User {
 	id: number;
 	username: string;
@@ -12,7 +11,6 @@ interface User {
 	createdAt: string;
 }
 
-// Define auth context type
 interface AuthContextType {
 	user: User | null;
 	isLoading: boolean;
@@ -23,7 +21,6 @@ interface AuthContextType {
 	authFetch: (url: string, options?: RequestInit) => Promise<Response>;
 }
 
-// Create context with default values
 const AuthContext = createContext<AuthContextType>({
 	user: null,
 	isLoading: true,
@@ -34,10 +31,8 @@ const AuthContext = createContext<AuthContextType>({
 	authFetch: async () => new Response(),
 });
 
-// Hook to use auth context
 export const useAuth = () => useContext(AuthContext);
 
-// Auth provider component
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
 }) => {
@@ -45,7 +40,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 	const [user, setUser] = useState<User | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 
-	// Function to parse JWT token
 	const parseJwt = (token: string) => {
 		try {
 			return JSON.parse(atob(token.split('.')[1]));
@@ -67,7 +61,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 	// Function to get user profile from API
 	const getUserProfile = async (token: string) => {
 		try {
-			// First try a simpler protected endpoint to test token validity
 			console.log('Testing token with protected endpoint');
 			try {
 				const testResponse = await fetch(
@@ -92,16 +85,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 					return null;
 				}
 
-				// If the test endpoint works, then try the actual profile endpoint
 				console.log(
 					'Token works with test endpoint, now fetching user profile'
 				);
 			} catch (testError) {
 				console.error('Error testing token:', testError);
-				// Continue anyway to try the actual profile endpoint
 			}
 
-			// Now try to get the profile data
 			console.log('Attempting to fetch user profile with token');
 			const userData = await authApi.getProfile(token);
 			console.log('User profile data received:', userData);
@@ -112,13 +102,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 		}
 	};
 
-	// Function to get auth header with token
 	const getAuthHeader = (): HeadersInit | undefined => {
 		const token = localStorage.getItem('token');
 		return token ? { Authorization: `Bearer ${token}` } : undefined;
 	};
 
-	// Function for authenticated fetch requests
 	const authFetch = async (
 		url: string,
 		options: RequestInit = {}

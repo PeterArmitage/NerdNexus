@@ -1,14 +1,16 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import Navigation from './components/Navigation/page';
 import { AuthProvider } from '@/context/AuthContext';
+import { CartProvider } from '@/context/CartContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-	title: 'NerdNexus - Gaming & Anime Culture',
+	title: 'NerdNexus - Your Ultimate Gaming & Anime Destination',
 	description:
-		'Your gateway to gaming and anime culture. Shop games, anime, manga, and collectibles.',
+		'Shop for the latest video games, anime, manga, and collectibles at NerdNexus.',
 };
 
 export default function RootLayout({
@@ -18,8 +20,15 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang='en'>
-			<body className={inter.className}>
-				<AuthProvider>{children}</AuthProvider>
+			<body
+				className={`${inter.className} bg-gray-900 text-white min-h-screen`}
+			>
+				<AuthProvider>
+					<CartProvider>
+						<Navigation />
+						<main className='pt-16'>{children}</main>
+					</CartProvider>
+				</AuthProvider>
 			</body>
 		</html>
 	);
